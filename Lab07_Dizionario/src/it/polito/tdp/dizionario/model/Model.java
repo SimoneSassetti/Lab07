@@ -9,11 +9,11 @@ import org.jgrapht.graph.*;
 import it.polito.tdp.dizionario.db.WordDAO;
 
 public class Model {
-	Graph<String, DefaultEdge> grafo = new SimpleGraph<String, DefaultEdge>(DefaultEdge.class);
+	UndirectedGraph<String, DefaultEdge> grafo = new SimpleGraph<String, DefaultEdge>(DefaultEdge.class);
+	List<String> parole=new ArrayList<String>();
 	
 	public List<String> createGraph(int numeroLettere) {
 		WordDAO dao=new WordDAO();
-		List<String> parole=new ArrayList<String>();
 		
 		parole=dao.getAllWordsFixedLength(numeroLettere);
 		
@@ -21,49 +21,55 @@ public class Model {
 			grafo.addVertex(parole.get(i));
 		}
 		
-		for(int i=0; i<parole.size(); i++){
-			int count=0;
-			String a=parole.get(i);
-			for(int j=i; j<parole.size(); j++){
-				String b=parole.get(j);
-				for(int k=0; k<a.length() && count<3; k++){
-					 if(a.charAt(k) != b.charAt(k)){
-						 count++;
-					 }
-				}
-				if(count==1){
-					grafo.addEdge(a,b);
-				}
+		for(String parola: parole){
+			List<String> paroleVicine=this.getParoleSimili(parola);
+			for(String b: paroleVicine){
+				grafo.addEdge(parola, b);
 			}
 		}
-		System.out.println(grafo);
 		return parole;
 	}
 
 	public List<String> displayNeighbours(String parolaInserita) {
-		
-		
-		for (DefaultEdge arch: grafo.edgesOf(parolaInserita)) {
-
-			System.out.format("-- adiacent vertex: %s\n", Graphs.getOppositeVertex(grafo, arch, parolaInserita));
-
-			if (grafo.getEdgeSource(arch) == parolaInserita) {
-				System.out.format("adiacent vertex: %s\n", grafo.getEdgeTarget(arch));
-			} else {
-				System.out.format("adiacent vertex: %s\n", grafo.getEdgeSource(arch));
-			}
-		}
-		
-		
-		
-		
-		
-		
-		return new ArrayList<String>();
+		List<String> vicini=Graphs.neighborListOf(grafo, parolaInserita);		
+		return vicini;
 	}
 
 	public String findMaxDegree() {
-		System.out.println("Model -- TODO");
-		return "";
+		int num=0;
+		int grado=0;
+		String verticeGradoMax="";
+		for(String parola: grafo.vertexSet()){
+			if(grafo.degreeOf(parola)>num){
+				verticeGradoMax=parola;
+				grado=grafo.degreeOf(parola);
+				num=grado;
+			}
+		}
+		String temp="";
+		for(String s: this.getParoleSimili(verticeGradoMax)){
+			temp+=s+"-";
+		}
+		String ris="Grado massimo:\n"+verticeGradoMax+": grado "+grado+"\nVicini: "+temp+"\n";
+		return ris;
+	}
+	
+	public List<String> getParoleSimili(String a){
+		int count=0;
+		List<String> paroleVicine=new ArrayList<String>();
+		for(String parola: parole){
+			count=0;
+			if(parola.compareTo(a)!=0){
+				for(int k=0; k<a.length(); k++){
+					 if(a.charAt(k) != parola.charAt(k)){
+						 count++;
+					 }
+				}
+				if(count==1){
+					paroleVicine.add(parola);
+				}
+			}
+		}
+		return paroleVicine;	
 	}
 }
