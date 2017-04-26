@@ -20,13 +20,22 @@ public class Model {
 		for(int i=0; i<parole.size(); i++){
 			grafo.addVertex(parole.get(i));
 		}
-		
-		for(String parola: parole){
-			List<String> paroleVicine=this.getParoleSimili(parola);
-			for(String b: paroleVicine){
-				grafo.addEdge(parola, b);
+		for(String s: grafo.vertexSet()){
+			List<String> verticiVicini=dao.getAllSimilarWords(s, numeroLettere);
+			System.out.println(s);
+			System.out.println(verticiVicini);
+			for(String vertice: verticiVicini){
+				if(!s.equals(vertice))
+					grafo.addEdge(s, vertice);
 			}
 		}
+		
+//		for(String parola: parole){
+//			List<String> paroleVicine=this.getParoleSimili(parola);
+//			for(String b: paroleVicine){
+//				grafo.addEdge(parola, b);
+//			}
+//		}
 		return parole;
 	}
 
