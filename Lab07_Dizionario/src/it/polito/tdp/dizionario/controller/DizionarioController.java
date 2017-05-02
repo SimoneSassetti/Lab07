@@ -31,7 +31,9 @@ public class DizionarioController {
 	private Button btnTrovaVicini;
 	@FXML
 	private Button btnTrovaGradoMax;
-
+	@FXML
+    private Button btnTrovaTuttiVicini;
+	
 	@FXML
 	void doReset(ActionEvent event) {
 		txtResult.clear();
@@ -84,14 +86,27 @@ public class DizionarioController {
 			txtResult.setText(re.getMessage());
 		}
 	}
-
 	@FXML
-	void initialize() {
-		assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Dizionario.fxml'.";
-		assert inputNumeroLettere != null : "fx:id=\"inputNumeroLettere\" was not injected: check your FXML file 'Dizionario.fxml'.";
-		assert inputParola != null : "fx:id=\"inputParola\" was not injected: check your FXML file 'Dizionario.fxml'.";
-		assert btnGeneraGrafo != null : "fx:id=\"btnGeneraGrafo\" was not injected: check your FXML file 'Dizionario.fxml'.";
-		assert btnTrovaVicini != null : "fx:id=\"btnTrovaVicini\" was not injected: check your FXML file 'Dizionario.fxml'.";
-		assert btnTrovaGradoMax != null : "fx:id=\"btnTrovaTutti\" was not injected: check your FXML file 'Dizionario.fxml'.";
-	}
+    void doTrovaTuttiVicini(ActionEvent event) {
+		String s=inputParola.getText();
+		if(s.compareTo("")==0 || s==null || s.matches("[0-9]*")){
+			txtResult.appendText("Valore non valido.\n");
+			return;
+		}
+		txtResult.appendText("Vertici raggiungibili:\n");
+		for(String parola: model.getNodiAdiacenti(s)){
+			txtResult.appendText(parola+"-");
+		}
+    }
+
+	  @FXML
+	    void initialize() {
+	        assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Dizionario.fxml'.";
+	        assert inputNumeroLettere != null : "fx:id=\"inputNumeroLettere\" was not injected: check your FXML file 'Dizionario.fxml'.";
+	        assert inputParola != null : "fx:id=\"inputParola\" was not injected: check your FXML file 'Dizionario.fxml'.";
+	        assert btnGeneraGrafo != null : "fx:id=\"btnGeneraGrafo\" was not injected: check your FXML file 'Dizionario.fxml'.";
+	        assert btnTrovaVicini != null : "fx:id=\"btnTrovaVicini\" was not injected: check your FXML file 'Dizionario.fxml'.";
+	        assert btnTrovaGradoMax != null : "fx:id=\"btnTrovaGradoMax\" was not injected: check your FXML file 'Dizionario.fxml'.";
+	        assert btnTrovaTuttiVicini != null : "fx:id=\"btnTrovaTuttiVicini\" was not injected: check your FXML file 'Dizionario.fxml'.";
+	    }
 }

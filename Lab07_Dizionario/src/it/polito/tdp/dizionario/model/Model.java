@@ -5,37 +5,38 @@ import java.util.List;
 
 import org.jgrapht.*;
 import org.jgrapht.graph.*;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import it.polito.tdp.dizionario.db.WordDAO;
 
 public class Model {
-	UndirectedGraph<String, DefaultEdge> grafo = new SimpleGraph<String, DefaultEdge>(DefaultEdge.class);
+	UndirectedGraph<String, DefaultEdge> grafo;
 	List<String> parole=new ArrayList<String>();
 	
 	public List<String> createGraph(int numeroLettere) {
 		WordDAO dao=new WordDAO();
-		
+		grafo = new SimpleGraph<String, DefaultEdge>(DefaultEdge.class);//L HO MESSO ALL'INTERNO COSI OGNI VOLTA LO CREO DA 0
 		parole=dao.getAllWordsFixedLength(numeroLettere);
 		
 		for(int i=0; i<parole.size(); i++){
 			grafo.addVertex(parole.get(i));
 		}
-		for(String s: grafo.vertexSet()){
-			List<String> verticiVicini=dao.getAllSimilarWords(s, numeroLettere);
-			System.out.println(s);
-			System.out.println(verticiVicini);
-			for(String vertice: verticiVicini){
-				if(!s.equals(vertice))
-					grafo.addEdge(s, vertice);
-			}
-		}
-		
-//		for(String parola: parole){
-//			List<String> paroleVicine=this.getParoleSimili(parola);
-//			for(String b: paroleVicine){
-//				grafo.addEdge(parola, b);
+//		for(String s: grafo.vertexSet()){
+//			List<String> verticiVicini=dao.getAllSimilarWords(s, numeroLettere);
+//			System.out.println(s);
+//			System.out.println(verticiVicini);
+//			for(String vertice: verticiVicini){
+//				if(!s.equals(vertice))
+//					grafo.addEdge(s, vertice);
 //			}
 //		}
+		
+		for(String parola: parole){
+			List<String> paroleVicine=this.getParoleSimili(parola);
+			for(String b: paroleVicine){
+				grafo.addEdge(parola, b);
+			}
+		}
 		return parole;
 	}
 
@@ -80,5 +81,14 @@ public class Model {
 			}
 		}
 		return paroleVicine;	
+	}
+	
+	public List<String> getNodiAdiacenti(String parola){
+		ArrayList<String> adiacenti=new ArrayList<String>();
+		BreadthFirstIterator<String, DefaultEdge> bgi=new BreadthFirstIterator<String, DefaultEdge>(grafo, parola);
+		while(bgi.hasNext()){
+			adiacenti.add(bgi.next());
+		}
+		return adiacenti;	
 	}
 }
