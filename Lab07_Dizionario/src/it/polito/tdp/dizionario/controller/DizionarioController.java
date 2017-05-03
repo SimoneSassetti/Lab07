@@ -93,9 +93,13 @@ public class DizionarioController {
 			txtResult.appendText("Valore non valido.\n");
 			return;
 		}
-		txtResult.appendText("Vertici raggiungibili:\n");
+		txtResult.appendText("\nVertici raggiungibili [CON LIBRERIA JGRAPH]:\n");
 		for(String parola: model.getNodiAdiacenti(s)){
 			txtResult.appendText(parola+"-");
+		}
+		txtResult.appendText("\nVertici raggiungibili [CON ALGORITMO RICORSIVO]:\n");
+		for(String stringa: model.getNodiAdiacentiMetodoIterativo(s)){
+			txtResult.appendText(stringa+"-");
 		}
     }
 

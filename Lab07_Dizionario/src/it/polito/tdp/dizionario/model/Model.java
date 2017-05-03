@@ -1,6 +1,7 @@
 package it.polito.tdp.dizionario.model;
 
 import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import org.jgrapht.*;
@@ -90,5 +91,21 @@ public class Model {
 			adiacenti.add(bgi.next());
 		}
 		return adiacenti;	
+	}
+
+	public List<String> getNodiAdiacentiMetodoIterativo(String s) {
+		Set<String> daVisitare=new HashSet<String>();
+		Set<String> visitati=new HashSet<String>();
+		
+		daVisitare.add(s);
+		
+		while(!daVisitare.isEmpty()){
+			String temp= daVisitare.iterator().next();
+			visitati.add(temp);
+			daVisitare.remove(temp);
+			daVisitare.addAll(Graphs.neighborListOf(grafo, temp));
+			daVisitare.removeAll(visitati);
+		}
+		return new ArrayList<String>(visitati);
 	}
 }
